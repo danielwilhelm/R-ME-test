@@ -6,15 +6,21 @@ The `R` package `METests` implements tests for various hypotheses about measurem
 
 1. Install the package `devtools` if it isn't already:
 
-```install.packages("devtools")```
+```R
+install.packages("devtools")
+```
 
 2. Load the package `devtools`:
 
-```library("devtools")```
+```R
+library("devtools")
+```
 
 3. Install the package `METests`:
 
-```install_github("danielwilhelm/R-ME-test")```
+```R
+install_github("danielwilhelm/R-ME-test")
+```
 
 ## Example
 
