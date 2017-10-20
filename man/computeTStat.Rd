@@ -9,9 +9,9 @@ computeTStat(Y, X, Z, a = NA, ckertype = "gaussian", stat = "CvM")
 \arguments{
 \item{Y}{n-dim. vector containing the observations on the outcome}
 
-\item{X}{matrix with n rows containing the observations on the variable X}
+\item{X}{matrix with n rows containing the observations on the scalar or vector X}
 
-\item{Z}{matrix with n rows containing the observations on the variable Z}
+\item{Z}{matrix with n rows containing the observations on the scalar or vector Z}
 
 \item{a}{vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X}
 
@@ -20,7 +20,7 @@ computeTStat(Y, X, Z, a = NA, ckertype = "gaussian", stat = "CvM")
 \item{stat}{character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")}
 }
 \value{
-(teststat, epsilonhat, Yhat) value of the test statistic, the residuals epsilonhat, and predicted values Yhat
+a list containing the following elements: 'teststat' value of the test statistic, 'epsilonhat' the residuals from a nonparametric regression from Y on X, 'Yhat' the predicted values from a nonparametric regression of Y on X, 'a' the bandwidth(s)
 }
 \description{
 compute Delgado and Manteiga (2001) test statistic for testing the hypothesis H0: E[Y|X,Z] = E[Y|X]

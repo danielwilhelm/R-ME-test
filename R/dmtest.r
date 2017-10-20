@@ -8,7 +8,7 @@
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
 #' @param ckertype character string denoting the kernel function to be used, as in np package (default: "gaussian")
 #' @param stat character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")
-#' @return (teststat, epsilonhat, Yhat) value of the test statistic, the residuals epsilonhat, and predicted values Yhat
+#' @return a list containing the following elements: 'teststat' value of the test statistic, 'epsilonhat' the residuals from a nonparametric regression from Y on X, 'Yhat' the predicted values from a nonparametric regression of Y on X, 'a' the bandwidth(s)
 #' @keywords significance test Delgado Manteiga measurement error
 #' @export
 #' @examples
@@ -20,13 +20,14 @@ computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 	if (is.matrix(Z) | is.data.frame(Z)) dZ <- ncol(Z) else { stopifnot(is.numeric(Z)); dZ <- 1; }
 
 	# nonparametric regression of Y on X
-	if (is.na(a) | length(a)!=dX) a <- np::npregbw(xdat=X, ydat=Y)
+	if (any(is.na(a)) | length(a)!=dX) a <- (np::npregbw(xdat=X, ydat=Y))$bw
 	fhat <- c(np::npksum(txdat=X, leave.one.out=FALSE, bandwidth.divide=TRUE, bws=a, ckertype=ckertype)$ksum) / n
 	Yhat <- c(np::npksum(txdat=X, tydat=Y, leave.one.out=FALSE, bandwidth.divide=TRUE, bws=a, ckertype=ckertype)$ksum) / fhat / n
 	epsilonhat <- Y-Yhat
 
 	# test statistic
 	Tn <- function(x,z) {
+		X <- as.matrix(X); Z <- as.matrix(Z)
 		ind <- apply((X<=x), 1, prod) * apply((Z<=z), 1, prod)
 		return(mean(epsilonhat*fhat*ind))
 	}
@@ -35,7 +36,7 @@ computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 		"CvM" = sum(Tn.vals^2),
 		"KS"  = max(abs(sqrt(n)*Tn.vals)))
 
-	return(list(teststat=teststat, epsilonhat=epsilonhat, Yhat=Yhat))
+	return(list(teststat=teststat, epsilonhat=epsilonhat, Yhat=Yhat, a=a))
 }
 
 
@@ -51,34 +52,35 @@ computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
 #' @param ckertype character string denoting the kernel function to be used, as in np package (default: "gaussian")
 #' @param stat character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")
-#' @return a list containing the following elements: 'teststat' value of the test statistic, 'cv' bootstrap critical value, 'rej' a 1-0 indicator for whether the test rejects or not, 'pval' p-value
+#' @return a list containing the following elements: 'teststat' value of the test statistic, 'cv' bootstrap critical value, 'rej' a 1-0 indicator for whether the test rejects or not, 'pval' p-value, 'a' the bandwidth(s)
 #' @keywords significance test Delgado Manteiga measurement error
 #' @export
 #' @examples
 #' DMTest(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM")
 DMTest <- function(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM") {
 
-	stopifnot(size<1 & size>0); stopifnot(is.numeric(a) & sum(a>0)==length(a))
+	stopifnot(size<1 & size>0)
 
 	# compute test statistic
 	res <- computeTStat(Y, X, Z, a, ckertype, stat)
 	teststat <- res$teststat
 	epsilonhat <- res$epsilonhat
 	Yhat <- res$Yhat
+	ahat <- res$a
 
 	# bootstrap critical value
 	teststatb <- rep(0,B)
 	for (b in 1:B) {
 		V <- rMammen(length(Y))
 		Yhatstar <- Yhat+epsilonhat*V
-		teststatb[b] <- computeTStat(Yhatstar, X, Z, a, ckertype, stat)$teststat
+		teststatb[b] <- computeTStat(Yhatstar, X, Z, ahat, ckertype, stat)$teststat
 	}
 	cv <- quantile(teststatb, 1-size)
 
 	Fn <- ecdf(teststatb)
 	pval <- 1-Fn(teststat)
 
-	return(list(teststat=teststat, cv=cv, rej=teststat>cv, pval=pval))
+	return(list(teststat=teststat, cv=cv, rej=teststat>cv, pval=pval, a=ahat))
 }
 
 #' draw a random sample from Mammen's two-point distribution

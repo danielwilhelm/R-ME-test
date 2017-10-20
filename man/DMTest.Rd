@@ -10,9 +10,9 @@ DMTest(Y, X, Z, size = 0.05, B = 100, a = NA, ckertype = "gaussian",
 \arguments{
 \item{Y}{n-dim. vector containing the observations on the outcome}
 
-\item{X}{matrix with n rows containing the observations on the variable X}
+\item{X}{matrix with n rows containing the observations on the scalar or vector X}
 
-\item{Z}{matrix with n rows containing the observations on the variable Z}
+\item{Z}{matrix with n rows containing the observations on the scalar or vector Z}
 
 \item{size}{scalar between 0 and 1, denoting the nominal size of the test (default: 0.05)}
 
@@ -25,7 +25,7 @@ DMTest(Y, X, Z, size = 0.05, B = 100, a = NA, ckertype = "gaussian",
 \item{stat}{character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")}
 }
 \value{
-a list containing the following elements: 'teststat' value of the test statistic, 'cv' bootstrap critical value, 'rej' a 1-0 indicator for whether the test rejects or not, 'pval' p-value
+a list containing the following elements: 'teststat' value of the test statistic, 'cv' bootstrap critical value, 'rej' a 1-0 indicator for whether the test rejects or not, 'pval' p-value, 'a' the bandwidth(s)
 }
 \description{
 perform the Delgado and Manteiga (2001) test of the hypothesis H0: E[Y|X,Z] = E[Y|X]
