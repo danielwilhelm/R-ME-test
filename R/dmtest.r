@@ -3,8 +3,8 @@
 #' compute Delgado and Manteiga (2001) test statistic for testing the hypothesis H0: E[Y|X,Z] = E[Y|X]
 #'	
 #' @param Y n-dim. vector containing the observations on the outcome
-#' @param X matrix with n rows containing the observations on the variable X
-#' @param Z matrix with n rows containing the observations on the variable Z
+#' @param X matrix with n rows containing the observations on the scalar or vector X
+#' @param Z matrix with n rows containing the observations on the scalar or vector Z
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
 #' @param ckertype character string denoting the kernel function to be used, as in np package (default: "gaussian")
 #' @param stat character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")
@@ -16,17 +16,20 @@
 computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 	
 	n <- length(Y)
-	if (is.matrix(X) | is.data.frame(X)) dX <- ncol(X) else dX <- 1
-	if (is.matrix(Z) | is.data.frame(Z)) dZ <- ncol(X) else dZ <- 1
+	if (is.matrix(X) | is.data.frame(X)) dX <- ncol(X) else { stopifnot(is.numeric(X)); dX <- 1; }
+	if (is.matrix(Z) | is.data.frame(Z)) dZ <- ncol(Z) else { stopifnot(is.numeric(Z)); dZ <- 1; }
 
 	# nonparametric regression of Y on X
-	if (is.na(a) | length(a)!=dX) { a <- np::npregbw(Y~X); print(a) }
+	if (is.na(a) | length(a)!=dX) a <- np::npregbw(xdat=X, ydat=Y)
 	fhat <- c(np::npksum(txdat=X, leave.one.out=FALSE, bandwidth.divide=TRUE, bws=a, ckertype=ckertype)$ksum) / n
 	Yhat <- c(np::npksum(txdat=X, tydat=Y, leave.one.out=FALSE, bandwidth.divide=TRUE, bws=a, ckertype=ckertype)$ksum) / fhat / n
 	epsilonhat <- Y-Yhat
 
 	# test statistic
-	Tn <- function(x,z) mean(epsilonhat*fhat* (X<=x)*(Z<=z))
+	Tn <- function(x,z) {
+		ind <- apply((X<=x), 1, prod) * apply((Z<=z), 1, prod)
+		return(mean(epsilonhat*fhat*ind))
+	}
 	Tn.vals <- c(apply(cbind(X,Z), 1, function(x) Tn(x[1:dX],x[(dX+1):(dX+dZ)])))
 	teststat <- switch(stat,
 		"CvM" = sum(Tn.vals^2),
@@ -41,8 +44,8 @@ computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 #' perform the Delgado and Manteiga (2001) test of the hypothesis H0: E[Y|X,Z] = E[Y|X]
 #'	
 #' @param Y n-dim. vector containing the observations on the outcome
-#' @param X matrix with n rows containing the observations on the variable X
-#' @param Z matrix with n rows containing the observations on the variable Z
+#' @param X matrix with n rows containing the observations on the scalar or vector X
+#' @param Z matrix with n rows containing the observations on the scalar or vector Z
 #' @param size scalar between 0 and 1, denoting the nominal size of the test (default: 0.05)
 #' @param B integer denoting the number of bootstrap samples to be used (default: 100)
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
@@ -54,6 +57,8 @@ computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 #' @examples
 #' DMTest(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM")
 DMTest <- function(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM") {
+
+	stopifnot(size<1 & size>0); stopifnot(is.numeric(a) & sum(a>0)==length(a))
 
 	# compute test statistic
 	res <- computeTStat(Y, X, Z, a, ckertype, stat)
