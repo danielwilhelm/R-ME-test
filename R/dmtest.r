@@ -12,8 +12,8 @@
 #' @keywords significance test Delgado Manteiga measurement error
 #' @export
 #' @examples
-#' computeTStat(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM")
-computeTStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
+#' computeDMStat(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM")
+computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 	
 	n <- length(Y)
 	if (is.matrix(X) | is.data.frame(X)) dX <- ncol(X) else { stopifnot(is.numeric(X)); dX <- 1; }
@@ -62,7 +62,7 @@ DMTest <- function(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="C
 	stopifnot(size<1 & size>0)
 
 	# compute test statistic
-	res <- computeTStat(Y, X, Z, a, ckertype, stat)
+	res <- computeDMStat(Y, X, Z, a, ckertype, stat)
 	teststat <- res$teststat
 	epsilonhat <- res$epsilonhat
 	Yhat <- res$Yhat
@@ -73,9 +73,9 @@ DMTest <- function(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="C
 	for (b in 1:B) {
 		V <- rMammen(length(Y))
 		Yhatstar <- Yhat+epsilonhat*V
-		teststatb[b] <- computeTStat(Yhatstar, X, Z, ahat, ckertype, stat)$teststat
+		teststatb[b] <- computeDMStat(Yhatstar, X, Z, ahat, ckertype, stat)$teststat
 	}
-	cv <- quantile(teststatb, 1-size)
+	cv <- quantile(teststatb, 1-size, na.rm=TRUE)
 
 	Fn <- ecdf(teststatb)
 	pval <- 1-Fn(teststat)

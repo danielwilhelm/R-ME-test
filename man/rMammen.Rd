@@ -22,4 +22,3 @@ rMammen(n)
 \keyword{generator}
 \keyword{random}
 \keyword{sample}
-

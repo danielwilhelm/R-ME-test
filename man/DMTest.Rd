@@ -39,4 +39,3 @@ DMTest(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM")
 \keyword{measurement}
 \keyword{significance}
 \keyword{test}
-

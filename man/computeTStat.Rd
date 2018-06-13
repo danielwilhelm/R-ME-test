@@ -34,4 +34,3 @@ computeTStat(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM")
 \keyword{measurement}
 \keyword{significance}
 \keyword{test}
-
