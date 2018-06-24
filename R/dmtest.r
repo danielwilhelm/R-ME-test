@@ -26,12 +26,21 @@ computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 	epsilonhat <- Y-Yhat
 
 	# test statistic
-	Tn <- function(x,z) {
-		X <- as.matrix(X); Z <- as.matrix(Z)
-		ind <- apply((X<=x), 1, prod) * apply((Z<=z), 1, prod)
-		return(mean(epsilonhat*fhat*ind))
+	if (dX==1 & dZ==1) {
+		Tn.vals <- rep(NA,n)
+		for (i in 1:n) {
+			ind <- (X<=X[i])*(Z<=Z[i])
+			Tn.vals[i] <- mean(epsilonhat*fhat*ind)
+		}
+	} else {
+		Tn <- function(x,z) {
+			X <- as.matrix(X); Z <- as.matrix(Z)
+			ind <- apply((X<=x), 1, prod) * apply((Z<=z), 1, prod)
+			return(mean(epsilonhat*fhat*ind))
+		}
+		Tn.vals <- c(apply(cbind(X,Z), 1, function(x) Tn(x[1:dX],x[(dX+1):(dX+dZ)])))
 	}
-	Tn.vals <- c(apply(cbind(X,Z), 1, function(x) Tn(x[1:dX],x[(dX+1):(dX+dZ)])))
+	
 	teststat <- switch(stat,
 		"CvM" = sum(Tn.vals^2),
 		"KS"  = max(abs(sqrt(n)*Tn.vals)))
