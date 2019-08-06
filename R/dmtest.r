@@ -2,9 +2,9 @@
 #'
 #' compute Delgado and Manteiga (2001) test statistic for testing the hypothesis H0: E[Y|X,Z] = E[Y|X]
 #'	
-#' @param Y n-dim. vector containing the observations on the outcome
-#' @param X matrix with n rows containing the observations on the scalar or vector X
-#' @param Z matrix with n rows containing the observations on the scalar or vector Z
+#' @param Y n-dim. vector containing the observations on the outcome (discrete or continuous)
+#' @param X matrix with n rows containing the observations on the scalar or vector X (continuous)
+#' @param Z matrix with n rows containing the observations on the scalar or vector Z (discrete or continuous)
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
 #' @param ckertype character string denoting the kernel function to be used, as in np package (default: "gaussian")
 #' @param stat character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")
@@ -53,9 +53,9 @@ computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 #'
 #' perform the Delgado and Manteiga (2001) test of the hypothesis H0: E[Y|X,Z] = E[Y|X]
 #'	
-#' @param Y n-dim. vector containing the observations on the outcome
-#' @param X matrix with n rows containing the observations on the scalar or vector X
-#' @param Z matrix with n rows containing the observations on the scalar or vector Z
+#' @param Y n-dim. vector containing the observations on the outcome (discrete or continuous)
+#' @param X matrix with n rows containing the observations on the scalar or vector X (continuous)
+#' @param Z matrix with n rows containing the observations on the scalar or vector Z (discrete or continuous)
 #' @param size scalar between 0 and 1, denoting the nominal size of the test (default: 0.05)
 #' @param B integer denoting the number of bootstrap samples to be used (default: 100)
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
