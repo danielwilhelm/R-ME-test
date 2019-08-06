@@ -2,9 +2,9 @@
 #'
 #' compute Delgado and Manteiga (2001) test statistic for testing the hypothesis H0: E[Y|X,Z] = E[Y|X]
 #'	
-#' @param Y n-dim. vector containing the observations on the outcome (discrete or continuous)
-#' @param X matrix with n rows containing the observations on the scalar or vector X (continuous)
-#' @param Z matrix with n rows containing the observations on the scalar or vector Z (discrete or continuous)
+#' @param Y n-dim. vector containing the observations on the outcome
+#' @param X matrix with n rows containing the observations on the scalar or vector X
+#' @param Z matrix with n rows containing the observations on the scalar or vector Z
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
 #' @param ckertype character string denoting the kernel function to be used, as in np package (default: "gaussian")
 #' @param stat character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")
@@ -26,21 +26,15 @@ computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 	epsilonhat <- Y-Yhat
 
 	# test statistic
-	if (dX==1 & dZ==1) {
-		Tn.vals <- rep(NA,n)
-		for (i in 1:n) {
-			ind <- (X<=X[i])*(Z<=Z[i])
-			Tn.vals[i] <- mean(epsilonhat*fhat*ind)
-		}
-	} else {
-		Tn <- function(x,z) {
-			X <- as.matrix(X); Z <- as.matrix(Z)
-			ind <- apply((X<=x), 1, prod) * apply((Z<=z), 1, prod)
-			return(mean(epsilonhat*fhat*ind))
-		}
-		Tn.vals <- c(apply(cbind(X,Z), 1, function(x) Tn(x[1:dX],x[(dX+1):(dX+dZ)])))
+	Tn <- function(x,z) {
+		X <- as.matrix(X); Z <- as.matrix(Z)
+		stopifnot(ncol(X)==length(x) & ncol(Z)==length(z))
+		if (ncol(X)>1) x <- matrix(rep(x,n),nrow=n,byrow=TRUE)
+		if (ncol(Z)>1) z <- matrix(rep(z,n),nrow=n,byrow=TRUE)
+		ind <- apply((X<=x), 1, prod) * apply((Z<=z), 1, prod)
+		return(mean(epsilonhat*fhat*ind))
 	}
-	
+	Tn.vals <- c(apply(cbind(X,Z), 1, function(x) Tn(x[1:dX],x[(dX+1):(dX+dZ)])))
 	teststat <- switch(stat,
 		"CvM" = sum(Tn.vals^2),
 		"KS"  = max(abs(sqrt(n)*Tn.vals)))
@@ -49,13 +43,14 @@ computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 }
 
 
+
 #' perform the Delgado and Manteiga (2001) test
 #'
 #' perform the Delgado and Manteiga (2001) test of the hypothesis H0: E[Y|X,Z] = E[Y|X]
 #'	
-#' @param Y n-dim. vector containing the observations on the outcome (discrete or continuous)
-#' @param X matrix with n rows containing the observations on the scalar or vector X (continuous)
-#' @param Z matrix with n rows containing the observations on the scalar or vector Z (discrete or continuous)
+#' @param Y n-dim. vector containing the observations on the outcome
+#' @param X matrix with n rows containing the observations on the scalar or vector X
+#' @param Z matrix with n rows containing the observations on the scalar or vector Z
 #' @param size scalar between 0 and 1, denoting the nominal size of the test (default: 0.05)
 #' @param B integer denoting the number of bootstrap samples to be used (default: 100)
 #' @param a vector of bandwidths, of the same dimension as there are columns in X, if unspecified, then the bandwidths are determined by cross-validation from nonparametric regression of Y on X
