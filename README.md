@@ -1,22 +1,22 @@
 # METests
 
-The `R` package `METests` implements tests for various hypotheses about measurement error as proposed in Wilhelm (2018). The R package contains help files describing the various commands, their syntax and gives examples.
+The `R` package `METests` implements tests for various hypotheses about measurement error as proposed in [Wilhelm (2019)](http://www.ucl.ac.uk/~uctpdwi/papers/cwp4819.pdf). The R package contains help files describing the various commands, their syntax and gives examples.
 
 ## Installation
 
-1. Install the package `devtools` if it isn't already:
+Install the package `devtools` if it isn't already:
 
 ```R
 install.packages("devtools")
 ```
 
-2. Load the package `devtools`:
+Load the package `devtools`:
 
 ```R
 library("devtools")
 ```
 
-3. Install the package `METests`:
+Install the package `METests`:
 
 ```R
 install_github("danielwilhelm/R-ME-test")
@@ -47,4 +47,4 @@ DMTest(Y, X, Z)
 
 
 # Reference
-[Wilhelm, D. (2018), "Testing for the Presence of Measurement Error", CeMMAP Working Paper CWP45/18](http://www.ucl.ac.uk/~uctpdwi/papers/cwp451818.pdf)
+[Wilhelm, D. (2019), "Testing for the Presence of Measurement Error", CeMMAP Working Paper CWP48/19](http://www.ucl.ac.uk/~uctpdwi/papers/cwp4819.pdf)
