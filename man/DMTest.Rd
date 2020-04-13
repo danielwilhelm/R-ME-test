@@ -4,8 +4,8 @@
 \alias{DMTest}
 \title{perform the Delgado and Manteiga (2001) test}
 \usage{
-DMTest(Y, X, Z, size = 0.05, B = 100, a = NA, ckertype = "gaussian",
-  stat = "CvM")
+DMTest(Y, X, Z, size = 0.05, B = 100, a = NA,
+  ckertype = "gaussian", stat = "CvM")
 }
 \arguments{
 \item{Y}{n-dim. vector containing the observations on the outcome}
@@ -31,6 +31,9 @@ a list containing the following elements: 'teststat' value of the test statistic
 perform the Delgado and Manteiga (2001) test of the hypothesis H0: E[Y|X,Z] = E[Y|X]
 }
 \examples{
+Y <- rnorm(100)
+X <- rnorm(100)
+Z <- rnorm(100)
 DMTest(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM")
 }
 \keyword{Delgado}

@@ -1,0 +1,16 @@
+citHeader("To cite METests in publications use:")
+
+citEntry(entry = "techreport",
+  title        = "Testing for the Presence of Measurement Error",
+  author       = personList(as.person("Daniel Wilhelm")),
+  year         = "2019",
+  type         = "CeMMAP Working Paper",
+  institution  = "Institute for Fiscal Studies",
+  number       = "CWP48/19",
+  url          = "https://www.ucl.ac.uk/~uctpdwi/papers/cwp4819.pdf",
+
+  textVersion  =
+  paste("Daniel Wilhelm (2019),",
+        "Testing for the Presence of Measurement Error,",
+        "CeMMAP Working Paper CWP48/19.")
+)

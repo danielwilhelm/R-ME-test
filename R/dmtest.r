@@ -12,6 +12,9 @@
 #' @keywords significance test Delgado Manteiga measurement error
 #' @export
 #' @examples
+#' Y <- rnorm(100)
+#' X <- rnorm(100)
+#' Z <- rnorm(100)
 #' computeDMStat(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM")
 computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 	
@@ -60,6 +63,9 @@ computeDMStat <- function(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM") {
 #' @keywords significance test Delgado Manteiga measurement error
 #' @export
 #' @examples
+#' Y <- rnorm(100)
+#' X <- rnorm(100)
+#' Z <- rnorm(100)
 #' DMTest(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM")
 DMTest <- function(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="CvM") {
 
@@ -94,7 +100,7 @@ DMTest <- function(Y, X, Z, size=0.05, B=100, a=NA, ckertype="gaussian", stat="C
 #' @keywords random sample generator Mammen
 #' @export
 #' @examples
-#' rMammen(n)
+#' rMammen(100)
 rMammen <- function(n) {
 	V <- rbinom(n, 1, prob=(sqrt(5)-1)/(2*sqrt(5)))
 	V[V==0] <- (1-sqrt(5))/2

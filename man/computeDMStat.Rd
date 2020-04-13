@@ -26,6 +26,9 @@ a list containing the following elements: 'teststat' value of the test statistic
 compute Delgado and Manteiga (2001) test statistic for testing the hypothesis H0: E[Y|X,Z] = E[Y|X]
 }
 \examples{
+Y <- rnorm(100)
+X <- rnorm(100)
+Z <- rnorm(100)
 computeDMStat(Y, X, Z, a=NA, ckertype="gaussian", stat="CvM")
 }
 \keyword{Delgado}

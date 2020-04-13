@@ -16,7 +16,7 @@ V random sample from Mammen's two-point distribution
 draw a random sample from Mammen's two-point distribution
 }
 \examples{
-rMammen(n)
+rMammen(100)
 }
 \keyword{Mammen}
 \keyword{generator}
