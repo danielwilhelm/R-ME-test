@@ -4,8 +4,17 @@
 \alias{DMTest}
 \title{perform the Delgado and Manteiga (2001) test}
 \usage{
-DMTest(Y, X, Z, size = 0.05, B = 100, a = NA,
-  ckertype = "gaussian", stat = "CvM")
+DMTest(
+  Y,
+  X,
+  Z,
+  size = 0.05,
+  B = 100,
+  a = NA,
+  ckertype = "gaussian",
+  stat = "CvM",
+  indep = FALSE
+)
 }
 \arguments{
 \item{Y}{n-dim. vector containing the observations on the outcome}
@@ -23,12 +32,14 @@ DMTest(Y, X, Z, size = 0.05, B = 100, a = NA,
 \item{ckertype}{character string denoting the kernel function to be used, as in np package (default: "gaussian")}
 
 \item{stat}{character string denoting the type of test statistic to be computed: Cramer-von-Mises ("CvM", default) or Kolmogorov-Smirnov ("KS")}
+
+\item{indep}{logical; FALSE means that conditional mean independence is tested, otherwise conditional independence}
 }
 \value{
 a list containing the following elements: 'teststat' value of the test statistic, 'cv' bootstrap critical value, 'rej' a 1-0 indicator for whether the test rejects or not, 'pval' p-value, 'a' the bandwidth(s)
 }
 \description{
-perform the Delgado and Manteiga (2001) test of the hypothesis H0: E[Y|X,Z] = E[Y|X]
+perform the Delgado and Manteiga (2001) test of the hypothesis of conditional mean independence (E[Y|X,Z] = E[Y|X]) or conditional independence (Y is independent of Z given X)
 }
 \examples{
 Y <- rnorm(100)

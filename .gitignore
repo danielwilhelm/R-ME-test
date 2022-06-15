@@ -4,3 +4,4 @@
 .DS_Store
 R-ME-test.sublime-project
 R-ME-test.sublime-workspace
+tests/sim/log.txt
